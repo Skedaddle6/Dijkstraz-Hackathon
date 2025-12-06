@@ -1,60 +1,58 @@
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Depends, HTTPException
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
-from sqlalchemy.orm import Session
-from typing import List
-import json
-from database import SessionLocal, init_db, User, Incident, Alert
-from pydantic import BaseModel
-
-app = FastAPI()
-
-# Mount static files
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
-# Initialize Database
-init_db()
-
-# Dependency
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+> ** HAMRO CHIMEKI **
+** A Smart Community Safety & Monitoring System **
 
 
-from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, ForeignKey, Boolean
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-from datetime import datetime
+---
 
-DATABASE_URL = "sqlite:///./hamrochimeki.db"
+## 🎯 Our Main Motive
 
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+The primary objective of **Hamro Chimeki** is to foster a safer, more connected, and responsive neighborhood. We believe that community safety relies on **fast communication** and **automated awareness**.
 
-Base = declarative_base()
+This project bridges the gap between manual community reporting and automated hardware monitoring. By integrating IoT sensors with a web platform, we aim to:
+1.  **Democratize Safety:** Allow any resident to report incidents instantly.
+2.  **Automate Alerts:** Use hardware to detect environmental hazards (gas, pollution) and noise anomalies without human intervention.
+3.  **Protect Pets:** Create a safety net for community animals through GPS tracking.
 
-class User(Base):
-    __tablename__ = "users"
-    id = Column(Integer, primary_key=True, index=True)
-    phone_number = Column(String, unique=True, index=True)
-    username = Column(String)
-    is_verified = Column(Boolean, default=False)
-    lat = Column(Float, nullable=True)
-    lng = Column(Float, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
+---
 
+## 🌟 Key Features
 
-// Initialize Map
-const map = L.map('map').setView([27.7172, 85.3240], 13); // Default to Kathmandu
+### 1. 📢 Community Incident Reporting
+* **User Reporting:** Residents can log in and report accidents, suspicious activities, or civic issues directly on the platform.
+* **Live Feed:** A real-time dashboard allows neighbors to see what is happening around them instantly.
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-}).addTo(map);
+### 2. 🔊 Smart Noise Monitoring (IoT)
+* **Hardware:** Integrated Microphone Sensors.
+* **The Logic:** The system listens for sound anomalies. If the noise level exceeds a safety threshold (e.g., **85-90 dB**, indicative of screaming, explosions, or crashing), the system triggers an alert.
+* **Action:** Notifications are sent immediately via App or SMS to relevant users or authorities.
 
-// User Location
-let userMarker = null;
-let userLat = 27.7172;
-let userLng = 85.3240;
+### 3. 🐕 Pet Safety & Tracking
+* **Hardware:** GPS-enabled collars.
+* **Geofencing:** Owners can set a "safe zone" range for their pets.
+* **"On The Loose" Alert:** If a pet goes beyond the specific range:
+    * The owner receives an immediate notification.
+    * The website updates the map to show the pet is **"On the Loose,"** allowing neighbors to help locate and rescue the animal.
+
+### 4. 🌫️ Environmental Safety (Pollution & Gas)
+* **Pollution Meter:** Hardware sensors detect the local Air Quality Index (AQI) and provide live updates on the community map.
+* **Gas Leak Detection:** Sensors monitor for hazardous gases (LPG, Smoke). If a leak is detected, the website flashes a warning to nearby residents to ensure immediate evacuation or caution.
+
+---
+
+## 🛠️ Tech Stack & File Structure
+
+**Software:**
+* **Frontend:** HTML5, CSS3, JavaScript
+* **Backend:** Python
+* **Database:** Custom Python implementation
+
+**Project Structure:**
+```text
+Hamro-Chimeki/
+│
+├── main.py          # Server entry point & Logic
+├── database.py      # Database management
+├── index.html       # User Interface
+├── styles.css       # Styling
+├── app.js           # Frontend scripts & Map logic
+└── readme.txt       # Notes
