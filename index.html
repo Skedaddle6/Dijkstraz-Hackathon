@@ -17,7 +17,11 @@
             <div class="logo">HamroChimeki</div>
             <div class="user-status">
                 <span id="connection-status" class="status-indicator"></span>
-                <span id="user-info">Guest</span>
+                <span id="user-info">Hamro Chimeki Ramro Chimeki 👍</span>
+            </div>
+            <div class="sim-controls">
+                <button id="sim-sound-btn" class="sim-btn">Sound</button>
+                <button id="sim-pet-btn" class="sim-btn">Pet</button>
             </div>
         </header>
 
@@ -27,12 +31,21 @@
             <div class="sidebar">
                 <div class="tabs">
                     <button class="tab-btn active" data-tab="alerts">Alerts</button>
-                    <button class="tab-btn" data-tab="circles">Circles</button>
+                    <button class="tab-btn" data-tab="iot">Sound Alerts</button>
+                    <button class="tab-btn" data-tab="pet">Pet Alerts</button>
                 </div>
 
                 <div id="alerts-feed" class="feed-container">
-                    <!-- Alerts will be injected here -->
+
                     <div class="empty-state">No recent alerts in your area.</div>
+                </div>
+
+                <div id="iot-feed" class="feed-container hidden">
+                    <div class="empty-state">No IoT noise alerts detected.</div>
+                </div>
+
+                <div id="pet-feed" class="feed-container hidden">
+                    <div class="empty-state">No pet alerts.</div>
                 </div>
             </div>
         </main>
@@ -42,7 +55,7 @@
         </button>
     </div>
 
-    <!-- Incident Modal -->
+
     <div id="incident-modal" class="modal hidden">
         <div class="modal-content">
             <h2>Report Incident</h2>
