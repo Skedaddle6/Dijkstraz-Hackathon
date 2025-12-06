@@ -93,3 +93,27 @@ async def create_incident(incident: IncidentCreate, db: Session = Depends(get_db
         }
     }))
     return db_incident
+
+
+@app.get("/api/incidents")
+async def get_incidents(db: Session = Depends(get_db)):
+    return db.query(Incident).all()
+
+@app.post("/api/sos")
+async def trigger_sos(alert: AlertCreate, db: Session = Depends(get_db)):
+    db_alert = Alert(**alert.dict())
+    db.add(db_alert)
+    db.commit()
+    db.refresh(db_alert)
+    
+    # Broadcast SOS to all connected clients
+    await manager.broadcast(json.dumps({
+        "type": "sos",
+        "data": {
+            "message": alert.message,
+            "lat": alert.lat,
+            "lng": alert.lng,
+            "sender_id": alert.sender_id
+        }
+    }))
+    return db_alert
