@@ -19,3 +19,29 @@ class User(Base):
     lat = Column(Float, nullable=True)
     lng = Column(Float, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
+
+class Incident(Base):
+    __tablename__ = "incidents"
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String)
+    description = Column(String)
+    type = Column(String) # theft, fire, medical, etc.
+    lat = Column(Float)
+    lng = Column(Float)
+    reporter_id = Column(Integer, ForeignKey("users.id"))
+    is_anonymous = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    upvotes = Column(Integer, default=0)
+
+class Alert(Base):
+    __tablename__ = "alerts"
+    id = Column(Integer, primary_key=True, index=True)
+    message = Column(String)
+    type = Column(String) # sos, warning, info
+    lat = Column(Float)
+    lng = Column(Float)
+    sender_id = Column(Integer, ForeignKey("users.id"))
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+def init_db():
+    Base.metadata.create_all(bind=engine)
