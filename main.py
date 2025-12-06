@@ -39,3 +39,57 @@ class AlertCreate(BaseModel):
     lat: float
     lng: float
     sender_id: int
+
+
+# WebSocket Connection Manager
+class ConnectionManager:
+    def __init__(self):
+        self.active_connections: List[WebSocket] = []
+
+    async def connect(self, websocket: WebSocket):
+        await websocket.accept()
+        self.active_connections.append(websocket)
+
+    def disconnect(self, websocket: WebSocket):
+        self.active_connections.remove(websocket)
+
+    async def broadcast(self, message: str):
+        for connection in self.active_connections:
+            await connection.send_text(message)
+
+manager = ConnectionManager()
+
+@app.get("/")
+async def read_root():
+    return FileResponse('static/index.html')
+
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await manager.connect(websocket)
+    try:
+        while True:
+            data = await websocket.receive_text()
+            # Echo or process data if needed
+            # await manager.broadcast(f"Message text was: {data}")
+    except WebSocketDisconnect:
+        manager.disconnect(websocket)
+
+@app.post("/api/incidents")
+async def create_incident(incident: IncidentCreate, db: Session = Depends(get_db)):
+    db_incident = Incident(**incident.dict())
+    db.add(db_incident)
+    db.commit()
+    db.refresh(db_incident)
+    
+    # Broadcast incident to all connected clients
+    await manager.broadcast(json.dumps({
+        "type": "incident",
+        "data": {
+            "title": incident.title,
+            "description": incident.description,
+            "lat": incident.lat,
+            "lng": incident.lng,
+            "type": incident.type
+        }
+    }))
+    return db_incident
