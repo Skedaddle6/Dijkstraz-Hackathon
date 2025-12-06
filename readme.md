@@ -1,6 +1,6 @@
-> ** HAMRO CHIMEKI **
-** A Smart Community Safety & Monitoring System **
+# 🏠 HAMRO CHIMEKI
 
+## A Smart Community Safety & Monitoring System
 
 ---
 
